@@ -2,22 +2,38 @@
 
 ## 1. Problem Information
 
-- Platform: UVa Online Judge
-- Problem ID: 10008
-- Problem Title: What's Cryptanalysis?
-- Source Code: src/UVa10008.cpp
+- **Platform:** UVa Online Judge
+- **Problem ID:** 10008
+- **Problem Title:** What's Cryptanalysis?
+- **Problem Link:** https://onlinejudge.org/external/100/10008.pdf
+- **Source Code (Fail):** No original code was submitted
+- **Source Code (Correct/Accepted):** [src/UVa10008.cpp](./src/UVa10008.cpp)
 
 ## 2. Problem Statement in My Own Words
 
-The problem gives several lines of text. I need to count how many times each English letter appears. Uppercase and lowercase letters should be treated as the same letter. After counting, I need to print the letters by frequency from high to low. If two letters have the same frequency, they should be printed in alphabetical order.
+The problem gives several lines of text. I need to count how many times each English letter appears in all lines.
+
+Uppercase and lowercase letters should be treated as the same letter. Non-letter characters, such as spaces and punctuation, should be ignored.
+
+After counting, I need to print each appeared letter and its frequency. The output should be sorted by frequency from high to low. If two letters have the same frequency, they should be printed in alphabetical order.
 
 ## 3. Thinking Logic and Solution Strategy
 
-This problem is mainly about character counting and sorting.
+### Initial Thoughts
 
-First, I read the number of lines. Then I read each line and check every character. If the character is an English letter, I convert it to uppercase and increase its count.
+I did not submit this problem during the original assignment time. When I solved it later, I first noticed that the input contains full lines, not only single words. Therefore, I need to use `getline` to read each line correctly.
 
-After counting all letters, I store the letters that appeared into a vector. Then I sort the vector using two rules:
+### Final Strategy
+
+I use an array or vector of size 26 to count letters from `A` to `Z`.
+
+For every character in the input lines:
+
+- Check whether it is an English letter.
+- Convert it to uppercase.
+- Increase the count of that letter.
+
+After counting, I store the appeared letters into a vector and sort them using two rules:
 
 - Higher frequency comes first.
 - If the frequency is the same, alphabetical order comes first.
@@ -28,15 +44,18 @@ After counting all letters, I store the letters that appeared into a vector. The
 START
 
 Read number of lines
+Ignore the newline after the number
+
+Create count array for 26 letters
 
 For each line:
     Read the whole line
-    For each character in the line:
-        If it is a letter:
+    For each character:
+        If the character is a letter:
             Convert it to uppercase
-            Increase its count
+            Increase the corresponding count
 
-Put all appeared letters into a list
+Create a list of appeared letters
 
 Sort the list:
     Higher count first
@@ -53,16 +72,65 @@ END
 
 No original code was submitted for this problem.
 
-Why it failed:
+**Why it failed:**
 
 - I did not finish or submit this problem during the original assignment time.
 
 ### Correct Code
 
-See `src/UVa10008.cpp`.
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cctype>
+using namespace std;
 
-Why it works:
+int main() {
+    int n;
+    cin >> n;
+    cin.ignore();
 
+    vector<int> count(26, 0);
+
+    for (int i = 0; i < n; i++) {
+        string line;
+        getline(cin, line);
+
+        for (char ch : line) {
+            if (isalpha(static_cast<unsigned char>(ch))) {
+                char upper = toupper(static_cast<unsigned char>(ch));
+                count[upper - 'A']++;
+            }
+        }
+    }
+
+    vector<pair<char, int>> letters;
+
+    for (int i = 0; i < 26; i++) {
+        if (count[i] > 0) {
+            letters.push_back({'A' + i, count[i]});
+        }
+    }
+
+    sort(letters.begin(), letters.end(), [](const auto& a, const auto& b) {
+        if (a.second != b.second) {
+            return a.second > b.second;
+        }
+        return a.first < b.first;
+    });
+
+    for (const auto& letter : letters) {
+        cout << letter.first << " " << letter.second << endl;
+    }
+
+    return 0;
+}
+```
+
+**Why it works:**
+
+- It reads full lines using `getline`.
 - It counts only English letters.
 - It treats uppercase and lowercase letters as the same.
 - It ignores spaces, punctuation, and other non-letter characters.
@@ -75,11 +143,13 @@ Why it works:
 
 | Item | Original Submission | Correct Code |
 |---|---|---|
-| Submission Status | Not submitted | Completed later for the archive |
-| Counting Logic | Not completed | Counts letters using an array |
-| Case Handling | Not completed | Converts letters to uppercase |
-| Sorting | Not completed | Sorts by frequency, then alphabetically |
+| Logic | Not submitted | Counts letter frequency |
+| Edge Cases | Not handled | Handles lowercase letters and non-letter characters |
+| Output Handling | Not submitted | Prints letters in the required order |
+| Other | No original code | Completed later for the archive |
 
 ### Reflection
 
-I did not submit this problem during the original assignment time, but completing it later helped me understand how to process text input and sort custom data. I also learned that for online judge problems, reading the whole line with `getline` is important when the input contains spaces.
+I did not submit this problem during the original assignment time, so I completed it later for this archive. From this problem, I learned how to process a whole line of text and count character frequency.
+
+I also learned that sorting is not always based on one rule. In this problem, the main rule is frequency, but when two letters have the same frequency, alphabetical order must be used.
