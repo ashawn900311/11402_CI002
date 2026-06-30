@@ -1,45 +1,35 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
-#include<cmath>
+#include <iostream>
 using namespace std;
+
 int main() {
-	
-	vector<int>t;
-	int testcase{},buffer;
-	cin >> testcase;
-	buffer = testcase;
-	while (testcase > 0) {
-		vector<long long int>arr;
-		
-		int nums{}, times{};
-		cin >> nums;
-		for (int i{}; i < nums; i++) {
-			long long int a{};
-			cin >> a;
-			arr.push_back(a);
-		}
-		for (int i=0; i <nums; i++) {
-			for (int j = 0; j<i; j++ ) {
-				if (arr[j] > arr[j + 1])
-				{
-					swap(arr[j], arr[j + 1]);
-					++times;
-				}
-			}
-		}
-		t.push_back(times);
-		--testcase;
-		cout << "test:" << endl;
-		for (int i = 0; i < nums; i++) {
-			cout << arr[i];
-		}
-		cout << endl;
-		
-		
-	}
-	for (int i = 0; i <buffer; i++) {
-		cout << "A:" << t[i] << endl;
-	}
+    int n;
+    cin >> n;
+
+    while (n--) {
+        int length;
+        cin >> length;
+
+        int train[50];
+
+        for (int i = 0; i < length; i++) {
+            cin >> train[i];
+        }
+
+        int swaps = 0;
+
+        for (int i = 0; i < length - 1; i++) {
+            for (int j = 0; j < length - i - 1; j++) {
+                if (train[j] > train[j + 1]) {
+                    int temp = train[j];
+                    train[j] = train[j + 1];
+                    train[j + 1] = temp;
+                    swaps++;
+                }
+            }
+        }
+
+        cout << "Optimal train swapping takes " << swaps << " swaps." << endl;
+    }
+
+    return 0;
 }
