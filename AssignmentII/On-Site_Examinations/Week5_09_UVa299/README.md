@@ -2,33 +2,39 @@
 
 ## 1. Problem Information
 
-- Platform: UVa Online Judge
-- Problem ID: 299
-- Problem Title: Train Swapping
-- Source Code: src/UVa299.cpp
+- **Platform:** UVa Online Judge
+- **Problem ID:** 299
+- **Problem Title:** Train Swapping
+- **Problem Link:** https://onlinejudge.org/external/2/299.pdf
+- **Source Code (Fail):** included in this README
+- **Source Code (Correct/Accepted):** [src/UVa299.cpp](./src/UVa299.cpp)
 
 ## 2. Problem Statement in My Own Words
 
-The problem gives several train sequences. Each train has a fixed number of cars, and the cars are given in an unordered sequence. I need to calculate how many adjacent swaps are needed to sort the train cars into increasing order.
+The problem gives several train sequences. Each train has a fixed number of cars, and the cars are given in an unordered order.
 
-The answer should be printed in the required format:
-
-```text
-Optimal train swapping takes X swaps.
-```
+For each train sequence, I need to count how many adjacent swaps are required to sort the train cars in increasing order. The output must show the number of swaps using the exact format required by UVa.
 
 ## 3. Thinking Logic and Solution Strategy
 
-At first, I thought I only needed to compare nearby elements and count how many times they were swapped. Later, I realized this problem is exactly like bubble sort. Bubble sort repeatedly compares two adjacent elements. If the left one is larger than the right one, they should be swapped.
+### Initial Thoughts
 
-Every adjacent swap in bubble sort represents one train swap, so the total number of swaps is the answer.
+At first, I thought I only needed to compare nearby elements and count how many times they were swapped. However, my first loop range was incorrect, so the train was not fully sorted in every case.
 
-The important points are:
+I also printed extra debugging output, which made the answer format different from the required UVa output.
 
-- Use bubble sort to sort the train.
+### Final Strategy
+
+The correct method is to use bubble sort. Bubble sort repeatedly compares two adjacent elements. If the left element is greater than the right element, I swap them and increase the swap counter.
+
+This works because the problem asks for adjacent swaps, and bubble sort performs exactly that kind of swap.
+
+Important points:
+
+- Use bubble sort to simulate adjacent train swaps.
 - Count every adjacent swap.
-- Print the answer immediately with the exact output format.
-- Do not print extra debugging text.
+- Print the answer with the exact UVa output format.
+- Do not print debugging text.
 
 ## 4. Pseudocode
 
@@ -49,7 +55,7 @@ For each test case:
                 Swap train[j] and train[j + 1]
                 swaps = swaps + 1
 
-    Print "Optimal train swapping takes swaps swaps."
+    Print "Optimal train swapping takes X swaps."
 
 END
 ```
@@ -65,66 +71,104 @@ END
 #include<string>
 #include<cmath>
 using namespace std;
+
 int main() {
-	
-	vector<int>t;
-	int testcase{},buffer;
-	cin >> testcase;
-	buffer = testcase;
-	while (testcase > 0) {
-		vector<long long int>arr;
-		
-		int nums{}, times{};
-		cin >> nums;
-		for (int i{}; i < nums; i++) {
-			long long int a{};
-			cin >> a;
-			arr.push_back(a);
-		}
-		for (int i=0; i <nums; i++) {
-			for (int j = 0; j<i; j++ ) {
-				if (arr[j] > arr[j + 1])
-				{
-					swap(arr[j], arr[j + 1]);
-					++times;
-				}
-			}
-		}
-		t.push_back(times);
-		--testcase;
-		cout << "test:" << endl;
-		for (int i = 0; i < nums; i++) {
-			cout << arr[i];
-		}
-		cout << endl;
-		
-		
-	}
-	for (int i = 0; i <buffer; i++) {
-		cout << "A:" << t[i] << endl;
-	}
+    vector<int> t;
+    int testcase{}, buffer;
+    cin >> testcase;
+    buffer = testcase;
+
+    while (testcase > 0) {
+        vector<long long int> arr;
+
+        int nums{}, times{};
+        cin >> nums;
+
+        for (int i{}; i < nums; i++) {
+            long long int a{};
+            cin >> a;
+            arr.push_back(a);
+        }
+
+        for (int i = 0; i < nums; i++) {
+            for (int j = 0; j < i; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                    ++times;
+                }
+            }
+        }
+
+        t.push_back(times);
+        --testcase;
+
+        cout << "test:" << endl;
+        for (int i = 0; i < nums; i++) {
+            cout << arr[i];
+        }
+        cout << endl;
+    }
+
+    for (int i = 0; i < buffer; i++) {
+        cout << "A:" << t[i] << endl;
+    }
 }
 ```
 
-Why it failed:
+**Why it failed:**
 
-- The bubble sort loop condition was wrong.  
-  The inner loop used `j < i`, so the array was not fully sorted in some cases.
-- The program printed debugging text like `test:` and the array contents.
-- The final output used `A:` instead of the required UVa format.
-- UVa requires the exact sentence:
-  `Optimal train swapping takes X swaps.`
+- The bubble sort loop range was wrong.
+- The inner loop used `j < i`, so the array was not fully sorted in some cases.
+- The program printed debugging text like `test:`.
+- The final output used `A:` instead of the required UVa output sentence.
+- UVa requires the exact sentence `Optimal train swapping takes X swaps.`
 
 ### Correct Code
 
-See `src/UVa299.cpp`.
+```cpp
+#include <iostream>
+using namespace std;
 
-Why it works:
+int main() {
+    int n;
+    cin >> n;
 
-- The corrected version uses a complete bubble sort.
+    while (n--) {
+        int length;
+        cin >> length;
+
+        int train[50];
+
+        for (int i = 0; i < length; i++) {
+            cin >> train[i];
+        }
+
+        int swaps = 0;
+
+        for (int i = 0; i < length - 1; i++) {
+            for (int j = 0; j < length - i - 1; j++) {
+                if (train[j] > train[j + 1]) {
+                    int temp = train[j];
+                    train[j] = train[j + 1];
+                    train[j + 1] = temp;
+                    swaps++;
+                }
+            }
+        }
+
+        cout << "Optimal train swapping takes " << swaps << " swaps." << endl;
+    }
+
+    return 0;
+}
+```
+
+**Why it works:**
+
+- It uses standard bubble sort.
 - It counts every adjacent swap.
-- It prints the answer in the exact format required by UVa.
-- It does not print any extra debugging output.
+- It prints the answer immediately for each test case.
+- It matches the exact output format required by UVa.
 
 ## 6. Difference and Reflection
 
@@ -132,13 +176,13 @@ Why it works:
 
 | Item | Fail Code | Correct Code |
 |---|---|---|
-| Sorting Logic | Inner loop used `j < i`, so sorting was incomplete | Uses standard bubble sort |
-| Swap Counting | Did not always count the correct number of swaps | Counts every adjacent swap correctly |
-| Output Format | Printed `test:` and `A:` | Prints the exact UVa output sentence |
-| Debug Output | Printed the array for checking | Removes all unnecessary output |
+| Logic | The loop range was incorrect | Uses complete bubble sort |
+| Edge Cases | Could fail when the train was not fully sorted | Handles all positions in the sequence |
+| Output Handling | Printed debug text and wrong labels | Prints the exact UVa sentence |
+| Other | Stored answers and printed later | Prints each answer after processing |
 
 ### Reflection
 
-In this problem, I learned that getting the correct algorithm is not enough. The output format is also very important for online judge problems. My first code had debugging output, so even if the logic was close, UVa would still judge it as wrong.
+In this problem, I learned that online judge problems require both correct logic and exact output format. My first code was close to the bubble sort idea, but the loop range was wrong, so it did not always count the correct number of swaps.
 
-I also learned that bubble sort must compare the correct range in every pass. If the loop condition is wrong, the array may not be fully sorted, and the swap count will also be wrong.
+I also learned that debugging output must be removed before submission. Even if the algorithm is almost correct, extra text will still cause a wrong answer.
